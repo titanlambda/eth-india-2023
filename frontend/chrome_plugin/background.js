@@ -1,6 +1,20 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && /^http/.test(tab.url)) {
+    let url = new URL(tab.url);
+    console.log(url)
+    if (url.hostname === 'zkevm.polygonscan.com' && url.pathname.startsWith('/address/')) {
       fetchRiskScoreDummy(tabId);
+    } 
+    else if (url.hostname === 'scrollscan.com' && url.pathname.startsWith('/address/')) {
+      fetchRiskScoreDummy(tabId);
+    }  
+    else if (url.hostname === 'celoscan.io' && url.pathname.startsWith('/address/')) {
+      fetchRiskScoreDummy(tabId);
+    } 
+    else if (url.hostname === 'explorer.mantle.xyz' && url.pathname.startsWith('/address/')) {
+      fetchRiskScoreDummy(tabId);
+    } 
+    
   }
 });
 
@@ -14,7 +28,6 @@ function fetchRiskScoreDummy(tabId) {
     summary: "summary"
   });
 }
-
 
 function getRiskColor(riskScore) {
   let color;
