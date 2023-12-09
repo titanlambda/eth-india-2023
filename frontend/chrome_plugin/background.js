@@ -29,22 +29,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     } 
     else if (url.hostname === 'explorer.mantle.xyz' && url.pathname.startsWith('/address/')) {
       let contractAddress = url.pathname.split('/')[2];
-      fetchRiskScoreDummy(tabId);
+      fetchRiskScoreMantle(contractAddress, tabId);
     } 
     
   }
 });
 
-function fetchRiskScoreDummy(tabId) {
-  let riskScore = Math.floor(Math.random() * 100);
-  // Send a single message to the content script with the score and summary
-  chrome.tabs.sendMessage(tabId, {
-    action: 'updateRiskScore',
-    color: getRiskColor(riskScore),
-    score: riskScore,
-    summary: "summary"
-  });
-}
+// function fetchRiskScoreDummy(tabId) {
+//   let riskScore = Math.floor(Math.random() * 100);
+//   // Send a single message to the content script with the score and summary
+//   chrome.tabs.sendMessage(tabId, {
+//     action: 'updateRiskScore',
+//     color: getRiskColor(riskScore),
+//     score: riskScore,
+//     summary: "summary"
+//   });
+// }
 
 function fetchRiskScorePoly(contractAddress, tabId) {
   let apiUrl = `http://localhost:8080/api/get_risk_score_polygon_mainnet_verified_contract?smart_contract_address=${contractAddress}`;
@@ -143,6 +143,25 @@ function fetchRiskScoreCelo(contractAddress, tabId) {
 
 function fetchRiskScoreBase(contractAddress, tabId) {
   let apiUrl = `http://localhost:8080/api/get_risk_score_base_mainnet_verified_contract?smart_contract_address=${contractAddress}`;
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      let riskScore = data.risk_score;
+      let color = getRiskColor(riskScore);
+      let summary = data.result_summary;
+
+      // Send a single message to the content script with the score and summary
+      chrome.tabs.sendMessage(tabId, {
+        action: 'updateRiskScore',
+        color: color,
+        score: riskScore,
+        summary: summary
+      });
+    });
+}
+
+function fetchRiskScoreMantle(contractAddress, tabId) {
+  let apiUrl = `http://localhost:8080/api/get_risk_score_mantle_mainnet_verified_contract?smart_contract_address=${contractAddress}`;
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
