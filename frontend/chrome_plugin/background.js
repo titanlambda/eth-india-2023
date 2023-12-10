@@ -31,6 +31,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       let contractAddress = url.pathname.split('/')[2];
       fetchRiskScoreMantle(contractAddress, tabId);
     } 
+    else if (url.hostname === 'filfox.info' && url.pathname.startsWith('/en/token/')) {
+      let contractAddress = url.pathname.split('/')[2];
+      fetchRiskScoreFilfox(contractAddress, tabId);
+    } 
     
   }
 });
@@ -162,6 +166,25 @@ function fetchRiskScoreBase(contractAddress, tabId) {
 
 function fetchRiskScoreMantle(contractAddress, tabId) {
   let apiUrl = `http://localhost:8080/api/get_risk_score_mantle_mainnet_verified_contract?smart_contract_address=${contractAddress}`;
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      let riskScore = data.risk_score;
+      let color = getRiskColor(riskScore);
+      let summary = data.result_summary;
+
+      // Send a single message to the content script with the score and summary
+      chrome.tabs.sendMessage(tabId, {
+        action: 'updateRiskScore',
+        color: color,
+        score: riskScore,
+        summary: summary
+      });
+    });
+}
+
+function fetchRiskScoreFilfox(contractAddress, tabId) {
+  let apiUrl = `http://localhost:8080/api/get_risk_score_filfox_mainnet_verified_contract?smart_contract_address=${contractAddress}`;
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
