@@ -11,7 +11,7 @@ import random
 
 class DBHandler:
     def __init__(self):
-        self.database = sqlite3.connect('getsecured_db.sqlite')
+        self.database = sqlite3.connect('risk_db.sqlite')
         self.database.execute('CREATE TABLE IF NOT EXISTS scan_findings (contract_adddress_hash TEXT PRIMARY KEY, json_output TEXT)')
         self.database.execute('CREATE TABLE IF NOT EXISTS contracts_ethereum (Txhash TEXT PRIMARY KEY, ContractAddress TEXT, ContractName TEXT, RiskScore REAL)')
         self.database.execute('CREATE TABLE IF NOT EXISTS contracts_polygon (Txhash TEXT PRIMARY KEY, ContractAddress TEXT, ContractName TEXT, RiskScore REAL)')

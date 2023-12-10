@@ -52,7 +52,7 @@ class RiskScoringAI:
 
     def fetch_data_from_db(self):
         # Connect to SQLite database
-        conn = sqlite3.connect('getsecured_db.sqlite')
+        conn = sqlite3.connect('risk_db.sqlite')
         query = "SELECT json_output FROM scan_findings"
         df = pd.read_sql_query(query, conn)
         return df
